@@ -1,0 +1,8 @@
+*.swp
+*.swo
+__pycache__/
+build/
+dist/
+*.egg-info
+caffe_pb2.py
+
