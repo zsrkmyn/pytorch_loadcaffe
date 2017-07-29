@@ -40,7 +40,6 @@ def __convert(netparam):
 
   for layer in netparam.layers:
     loader = layer_loaders.get(layer.type)
-    print(layer.name + ': ' + type_str(layer.type))
     if loader is None:
       raise NotImplementedError(type_str(layer.type) + ' not implemented')
 
@@ -49,8 +48,10 @@ def __convert(netparam):
     if layer.blobs:
       # slow, blobs_data -> list -> FloatTensor
       # but I cannot find a more efficient way using Python
-      module.weight.data = torch.FloatTensor(layer.blobs[0].data[:])
-      module.bias.data = torch.FloatTensor(layer.blobs[1].data[:])
+      module.weight.data = \
+          torch.FloatTensor(layer.blobs[0].data[:]).view_as(module.weight.data)
+      module.bias.data = \
+          torch.FloatTensor(layer.blobs[1].data[:]).view_as(module.bias.data)
 
     net.add_module(layer.name, module)
 
