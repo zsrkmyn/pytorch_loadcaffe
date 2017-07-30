@@ -29,16 +29,18 @@ from . import caffe_pb2
 def __convert(netparam):
   if netparam.layer:
     # Use LayerParameter, see caffe.proto L82
+    net_layers = netparam.layer
     layer_loaders = layers.v2_layer_loaders
     type_str = lambda x: x
   else:
     # Use V1LayerParameter, see caffe.proto L85
+    net_layers = netparam.layers
     layer_loaders = layers.v1_layer_loaders
     type_str = lambda x: caffe_pb2.V1LayerParameter.LayerType.Name(x)
 
   net = nn.Sequential()
 
-  for layer in netparam.layers:
+  for layer in net_layers:
     loader = layer_loaders.get(layer.type)
     if loader is None:
       raise NotImplementedError(type_str(layer.type) + ' not implemented')

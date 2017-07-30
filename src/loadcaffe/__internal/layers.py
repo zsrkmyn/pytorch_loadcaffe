@@ -26,13 +26,17 @@ from . import caffe_pb2
 def CONVOLUTION(layer):
   param = layer.convolution_param
   groups = param.group
-  in_channels = layer.blobs[0].channels
+  b = layer.blobs[0]
+  if b.HasField('shape'):
+    in_channels = b.shape.dim[1]
+  else:
+    in_channels = layer.blobs[0].channels
   out_channels = param.num_output
   k_w = param.kernel_w
   k_h = param.kernel_h
   s_w = param.stride_w
   s_h = param.stride_h
-  pad_w = param.pad_h
+  pad_w = param.pad_w
   pad_h = param.pad_h
 
   if k_w == 0 or k_h == 0:
@@ -52,7 +56,7 @@ def POOLING(layer):
   k_h = param.kernel_h
   s_w = param.stride_w
   s_h = param.stride_h
-  pad_w = param.pad_h
+  pad_w = param.pad_w
   pad_h = param.pad_h
 
   if k_w == 0 or k_h == 0:
@@ -85,7 +89,11 @@ def SIGMOID(layer):
 
 def INNER_PRODUCT(layer):
   param = layer.inner_product_param
-  n_input = layer.blobs[0].width
+  b = layer.blobs[0]
+  if b.HasField('shape'):
+    n_input = b.shape.dim[0]
+  else:
+    n_input = b.width
   n_output = param.num_output
   return nn.Linear(n_input, n_output)
 
