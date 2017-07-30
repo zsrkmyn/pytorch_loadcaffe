@@ -46,12 +46,10 @@ def __convert(netparam):
     module = loader(layer)
 
     if layer.blobs:
-      # slow, blobs_data -> list -> FloatTensor
-      # but I cannot find a more efficient way using Python
       module.weight.data = \
-          torch.FloatTensor(layer.blobs[0].data[:]).view_as(module.weight.data)
+          torch.FloatTensor(layer.blobs[0].data).view_as(module.weight.data)
       module.bias.data = \
-          torch.FloatTensor(layer.blobs[1].data[:]).view_as(module.bias.data)
+          torch.FloatTensor(layer.blobs[1].data).view_as(module.bias.data)
 
     net.add_module(layer.name, module)
 
