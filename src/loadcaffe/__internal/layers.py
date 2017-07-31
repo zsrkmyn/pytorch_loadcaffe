@@ -31,6 +31,11 @@ def CONVOLUTION(layer):
     in_channels = b.shape.dim[1]
   else:
     in_channels = layer.blobs[0].channels
+  dilation = param.dilation[:]
+  if len(dilation) == 1:
+    dilation = dilation[0]
+  elif len(dilation) == 0:
+    dilation = 1
   out_channels = param.num_output
   k_w = param.kernel_w
   k_h = param.kernel_h
@@ -39,16 +44,41 @@ def CONVOLUTION(layer):
   pad_w = param.pad_w
   pad_h = param.pad_h
 
+  # TODO: to support high dimension
   if k_w == 0 or k_h == 0:
-    k_w = k_h = param.kernel_size
+    n_dim = len(param.kernel_size)
+    if n_dim == 1:
+      k_w = k_h = param.kernel_size[0]
+    elif n_dim == 0:
+      raise RuntimeError('kernel_size is 0')
+    else:
+      raise NotImplementedError(
+        'high-dimension kernel_size has not been implemented yet')
+
   if s_w == 0 or s_h == 0:
-    s_w = s_h = param.stride
+    n_dim = len(param.stride)
+    if n_dim == 1:
+      s_w = s_h = param.stride[0]
+    elif n_dim == 0:
+      s_w = s_h = 1
+    else:
+      raise NotImplementedError(
+        'high-dimension stride has not been implemented yet')
+
   if pad_w == 0 and pad_h == 0:
-    pad_h = pad_w = param.pad
+    n_dim = len(param.pad)
+    if n_dim == 1:
+      pad_h = pad_w = param.pad[0]
+    elif n_dim == 0:
+      pad_h = pad_w = 0
+    else:
+      raise NotImplementedError(
+        'high-dimension pad has not been implemented yet')
 
   return nn.Conv2d(
     in_channels, out_channels,
-    (k_h, k_w), (s_h, s_w), 1, groups)
+    (k_h, k_w), (s_h, s_w), dilation, groups
+  )
 
 def POOLING(layer):
   param = layer.pooling_param

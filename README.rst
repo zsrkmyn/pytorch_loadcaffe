@@ -2,13 +2,17 @@ PyTorch loadcaffe
 =================
 An unofficial library for PyTorch to load caffe model.
 
-**NOTE**: The project is only tested with Python3 and caffe model with
-V1LayerParameter. Python2 and caffe model with LayerParameter are not tested.
+**NOTE**: The project is currently work-in-process, so there may be many bugs.
+Use it at your own risk. Issues and Pull Requests are welcomed.
 
 Requirements
 ------------
 - PyTorch
 - python-protobuf
+
+Build Requirements
+------------------
+- protobuf
 
 Installation
 ------------
@@ -39,8 +43,8 @@ See `here <https://bugs.archlinux.org/task/54959>`_ for more information.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The project currently supports the following caffe layers:
 
-- Convolution
-- Pooling
+- Convolution (2D only)
+- Pooling (2D only)
 - ReLU
 - Sigmoid
 - Tanh
